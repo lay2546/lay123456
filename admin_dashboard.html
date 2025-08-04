@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="th">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Admin แดชบอร์ด</title>
+    <link rel="icon" type="image/png" href="S__131055784-Photoroom.png" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="firebase.js" type="module"></script>
+    <script src="firebase-auth-modal.js" type="module"></script>
+    <link href="style.css" rel="stylesheet" />
+    <!-- <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Prompt:wght@400;600&display=swap"> -->
+    <style>
+        .card-hover {
+            transition: all 0.3s ease;
+        }
+
+        .card-hover:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+        }
+    </style>
+</head>
+
+<body class="bg-gradient-to-br from-white to-gray-100 min-h-screen text-gray-800">
+    <div id="admin-header"></div>
+
+    <!-- 🌟 Header -->
+    <section class="text-center py-8 fade-in px-4">
+        <h1 class="text-3xl sm:text-4xl md:text-5xl font-bold bg-clip-text mb-2">
+            📊 แดชบอร์ด
+        </h1>
+    </section>
+
+    <main class="p-4 max-w-7xl mx-auto">
+        <section class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
+            <div class="bg-white p-6 rounded-xl shadow-md card-hover border-l-4 border-green-500">
+                <h2 class="text-lg font-semibold">💰 ยอดขายสุทธิ</h2>
+                <p id="total-sales" class="text-4xl font-bold text-green-600 mt-2">฿0</p>
+                <p id="monthly-sales" class="text-sm text-gray-500 mt-2"></p>
+            </div>
+            <div class="bg-white p-6 rounded-xl shadow-md card-hover border-l-4 border-blue-500">
+                <h2 class="text-lg font-semibold">📦 จำนวนคำสั่งซื้อ</h2>
+                <p id="total-orders" class="text-4xl font-bold text-blue-600 mt-2">0 รายการ</p>
+            </div>
+        </section>
+
+        <!-- 🔍 ตัวกรองยอดขาย -->
+        <section class="text-center mb-10 space-y-4">
+            <div class="flex flex-col sm:flex-row sm:items-center sm:justify-center gap-4">
+                <!-- 📅 เลือกวัน -->
+                <div class="flex flex-col sm:flex-row sm:items-center gap-2">
+                    <label for="date-filter" class="text-sm font-medium text-gray-700 whitespace-nowrap">📅
+                        เลือกวัน</label>
+                    <input id="date-filter" type="date"
+                        class="px-4 py-2 border rounded shadow-sm focus:ring-pink-500 focus:border-pink-500 w-full sm:w-auto" />
+                </div>
+
+                <!-- 📆 ปุ่มเดือน/ปี/ทั้งหมด -->
+                <div class="flex gap-2">
+                    <button id="btn-all"
+                        class="bg-gray-100 hover:bg-pink-100 text-gray-700 hover:text-pink-600 px-4 py-2 rounded-lg transition text-sm">
+                        📋 ทั้งหมด
+                    </button>
+                    <button id="btn-month"
+                        class="bg-gray-100 hover:bg-pink-100 text-gray-700 hover:text-pink-600 px-4 py-2 rounded-lg transition text-sm">
+                        📅 เดือนนี้
+                    </button>
+                    <button id="btn-year"
+                        class="bg-gray-100 hover:bg-pink-100 text-gray-700 hover:text-pink-600 px-4 py-2 rounded-lg transition text-sm">
+                        🗓️ ปีนี้
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <section class="bg-white p-6 rounded-xl shadow-md card-hover">
+            <h2 class="text-xl font-semibold text-center mb-4">📊 กราฟยอดขายสุทธิรายวัน</h2>
+            <canvas id="salesChart" height="150" class="rounded-lg"></canvas>
+        </section>
+    </main>
+
+    <!-- 🌐 Language -->
+    <div class="fixed bottom-5 right-5 z-50">
+        <button id="lang-toggle"
+            class="w-12 h-12 rounded-full bg-gradient-to-r from-pink-500 to-blue-500 text-white text-2xl shadow-lg hover:scale-110 transition">
+            🇺🇸
+        </button>
+    </div>
+
+    <script src="dashboard.js" type="module"></script>
+    <script src="lang-switcher.js"></script>
+    <script type="module">
+        import { loadAdminHeader } from './default_load.js';
+        loadAdminHeader();
+    </script>
+</body>
+
+</html>

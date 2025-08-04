@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="utf-8" />
+  <title>Admin รายการสั่งซื้อ</title>
+  <link rel="icon" type="image/png" href="S__131055784-Photoroom.png" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="firebase.js" type="module"></script>
+  <script src="firebase-auth-modal.js" type="module"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5.0.0/dist/tesseract.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+  <link rel="stylesheet" href="style.css"/>
+</head>
+
+<body class="bg-gradient-to-br from-white to-gray-100 min-h-screen text-gray-800">
+  <!-- Enhanced Navbar -->
+  <div id="admin-header"></div>
+
+  <!-- 🌟 Header -->
+  <section class="text-center py-8 fade-in px-4">
+    <h1 class="text-3xl sm:text-4xl md:text-5xl font-bold bg-clip-text mb-2">
+      📋 รายการสั่งซื้อทั้งหมด
+    </h1>
+  </section>
+
+  <!-- Main Content -->
+  <main class="p-4 max-w-7xl mx-auto">
+    <!-- Enhanced Filter Section -->
+    <div class="glass-effect rounded-2xl p-6 mb-8 card-hover">
+      <h3 class="text-lg font-semibold text-pink-700 mb-4 flex items-center gap-2">
+        <span class="w-6 h-6 bg-pink-100 rounded-full flex items-center justify-center text-sm">🔍</span>
+        ตัวกรองข้อมูล
+      </h3>
+      <div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-4 items-end">
+        <div>
+          <label class="block font-medium mb-2 text-gray-700" for="filter-date">📅 เลือกวันที่:</label>
+          <input class="input-field border rounded-xl w-full px-4 py-3 bg-white" id="filter-date" type="date" />
+        </div>
+        <div>
+          <label class="block font-medium mb-2 text-gray-700" for="filter-month">🗓️ เลือกเดือน:</label>
+          <select class="input-field border rounded-xl w-full px-4 py-3 bg-white" id="filter-month">
+            <option value="">ทั้งหมด</option>
+            <option value="01">มกราคม</option>
+            <option value="02">กุมภาพันธ์</option>
+            <option value="03">มีนาคม</option>
+            <option value="04">เมษายน</option>
+            <option value="05">พฤษภาคม</option>
+            <option value="06">มิถุนายน</option>
+            <option value="07">กรกฎาคม</option>
+            <option value="08">สิงหาคม</option>
+            <option value="09">กันยายน</option>
+            <option value="10">ตุลาคม</option>
+            <option value="11">พฤศจิกายน</option>
+            <option value="12">ธันวาคม</option>
+          </select>
+        </div>
+        <div>
+          <label class="block font-medium mb-2 text-gray-700" for="filter-status">📊 สถานะ:</label>
+          <select class="input-field border rounded-xl w-full px-4 py-3 bg-white" id="filter-status">
+            <option value="">ทั้งหมด</option>
+            <option value="pending">รอชำระเงิน</option>
+            <option value="paid">ชำระแล้ว</option>
+            <option value="shipped">จัดส่งแล้ว</option>
+            <option value="delivered">ส่งถึงแล้ว</option>
+          </select>
+        </div>
+        <button class="btn-primary text-white px-6 py-3 rounded-xl font-semibold flex items-center justify-center gap-2" id="filter-button">
+          <span>🔍</span> ค้นหา
+        </button>
+      </div>
+    </div>
+
+    <!-- Enhanced Table Container -->
+    <div class="glass-effect rounded-2xl overflow-hidden shadow-xl">
+      <div class="overflow-x-auto">
+        <table class="min-w-full bg-white text-left">
+          <thead class="bg-gradient-to-r from-pink-50 to-pink-100 text-pink-800 sticky top-0 z-10">
+            <tr>
+              <th class="border-b-2 border-pink-200">
+                <div class="flex items-center justify-center">
+                  <input id="select-all" type="checkbox" class="w-4 h-4 text-pink-600 rounded focus:ring-pink-500" />
+                </div>
+              </th>
+              <th class="border-b-2 border-pink-200">👤 ชื่อลูกค้า</th>
+              <th class="border-b-2 border-pink-200">📞 เบอร์โทร</th>
+              <th class="border-b-2 border-pink-200">📍 ที่อยู่</th>
+              <th class="border-b-2 border-pink-200">🚚 วิธีจัดส่ง</th>
+              <th class="border-b-2 border-pink-200">🧺 รายการสินค้า</th>
+              <th class="border-b-2 border-pink-200">🕒 เวลา</th>
+              <th class="border-b-2 border-pink-200">💰 ยอดรวม</th>
+              <th class="border-b-2 border-pink-200">💳 วิธีชำระเงิน</th>
+              <th class="border-b-2 border-pink-200">🧾 สลิปชำระเงิน</th>
+              <th class="border-b-2 border-pink-200">📌 สถานะชำระเงิน</th>
+              <th class="border-b-2 border-pink-200">📦 สถานะการจัดส่ง</th>
+              <th class="border-b-2 border-pink-200">⚙️ สถานะคำสั่งซื้อ</th>
+            </tr>
+          </thead>
+          <tbody class="text-gray-700" id="order-table-body">
+            <!-- JS will populate table rows here -->
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Enhanced Action Bar -->
+    <div class="mt-8 grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <!-- Action Buttons -->
+      <div class="glass-effect rounded-2xl p-6 card-hover">
+        <h3 class="text-lg font-semibold text-gray-800 mb-4 flex items-center gap-2">
+          <span class="w-6 h-6 bg-gray-100 rounded-full flex items-center justify-center text-sm">⚙️</span>
+          การจัดการ
+        </h3>
+        <div class="flex flex-wrap gap-3">
+          <button class="bg-red-500 hover:bg-red-600 text-white px-6 py-3 rounded-xl font-semibold transition-all duration-300 hover:transform hover:scale-105 flex items-center gap-2" id="delete-selected">
+            <span>🗑️</span> ลบที่เลือก
+          </button>
+          <button class="bg-gray-500 hover:bg-gray-600 text-white px-6 py-3 rounded-xl font-semibold transition-all duration-300 hover:transform hover:scale-105 flex items-center gap-2" id="refresh-button">
+            <span>🔄</span> รีเฟรช
+          </button>
+          <button class="bg-green-500 hover:bg-green-600 text-white px-6 py-3 rounded-xl font-semibold transition-all duration-300 hover:transform hover:scale-105 flex items-center gap-2" id="export-button">
+            <span>📊</span> ส่งออกข้อมูล
+          </button>
+        </div>
+      </div>
+
+      <!-- Stats Card -->
+      <div class="stats-card rounded-2xl p-6 card-hover">
+        <h3 class="text-lg font-semibold text-gray-800 mb-4 flex items-center gap-2">
+          <span class="w-6 h-6 bg-green-100 rounded-full flex items-center justify-center text-sm">💰</span>
+          สรุปยอดขาย
+        </h3>
+        <div class="space-y-3">
+          <div class="flex justify-between items-center">
+            <span class="text-gray-600">ยอดรวมทั้งหมด:</span>
+            <span class="text-2xl font-bold text-green-600">฿<span id="grand-total">0.00</span></span>
+          </div>
+          <div class="flex justify-between items-center">
+            <span class="text-gray-600">จำนวนออเดอร์:</span>
+            <span class="text-lg font-semibold text-blue-600"><span id="total-orders">0</span> รายการ</span>
+          </div>
+          <div class="flex justify-between items-center">
+            <span class="text-gray-600">ออเดอร์วันนี้:</span>
+            <span class="text-lg font-semibold text-purple-600"><span id="today-orders">0</span> รายการ</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- 🌐 Language -->
+  <div class="fixed bottom-5 right-5 z-50">
+    <button id="lang-toggle"
+      class="w-12 h-12 rounded-full bg-gradient-to-r from-pink-500 to-blue-500 text-white text-2xl shadow-lg hover:scale-110 transition">
+      🇺🇸
+    </button>
+  </div>
+
+  <!-- Scripts -->
+  <script src="admin_order.js" type="module"></script>
+  <script src="lang-switcher.js"></script>
+  <script type="module">
+    import { loadAdminHeader } from './default_load.js';
+    loadAdminHeader();
+  </script>
+
+  <!-- Enhanced Loading Indicator -->
+  <div id="loading-indicator" class="hidden fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center">
+    <div class="bg-white rounded-2xl p-8 shadow-2xl flex flex-col items-center gap-4">
+      <div class="w-12 h-12 border-4 border-pink-200 border-t-pink-600 rounded-full animate-spin"></div>
+      <p class="text-gray-700 font-medium">กำลังโหลดข้อมูล...</p>
+    </div>
+  </div>
+
+  <script>
+    // Add some interactive enhancements
+    document.addEventListener('DOMContentLoaded', function() {
+      // Add loading states to buttons
+      const buttons = document.querySelectorAll('button');
+      buttons.forEach(button => {
+        button.addEventListener('click', function() {
+          if (!this.disabled) {
+            this.style.transform = 'scale(0.98)';
+            setTimeout(() => {
+              this.style.transform = '';
+            }, 150);
+          }
+        });
+      });
+
+      // Add focus effects to inputs
+      const inputs = document.querySelectorAll('input, select');
+      inputs.forEach(input => {
+        input.addEventListener('focus', function() {
+          this.parentElement.style.transform = 'translateY(-2px)';
+        });
+        
+        input.addEventListener('blur', function() {
+          this.parentElement.style.transform = '';
+        });
+      });
+
+      // Simulate some stats (replace with actual data)
+      document.getElementById('total-orders').textContent = '150';
+      document.getElementById('today-orders').textContent = '12';
+      document.getElementById('grand-total').textContent = '45,850.00';
+    });
+  </script>
+</body>
+</html>

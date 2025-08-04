@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admin Panel</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script type="module" src="firebase.js"></script>
+  <script type="module" src="admin-auth.js"></script>
+</head>
+<body class="flex bg-gray-100 min-h-screen">
+
+  <!-- ✅ Sidebar -->
+  <aside class="w-64 h-screen bg-pink-600 text-white fixed p-6 space-y-4">
+    <h1 class="text-2xl font-bold mb-4">🎛️ Admin Panel</h1>
+    <nav class="space-y-2 text-sm font-medium">
+      <button class="menu-btn w-full text-left px-3 py-2 rounded hover:bg-pink-700 transition" data-page="pages/dashboard/dashboard.html" data-title="หน้าหลัก">📈 Dashboard</button>
+      <button class="menu-btn w-full text-left px-3 py-2 rounded hover:bg-pink-700 transition" data-page="pages/product/product.html" data-title="เพิ่มสินค้า">➕ เพิ่มสินค้า</button>
+      <button class="menu-btn w-full text-left px-3 py-2 rounded hover:bg-pink-700 transition" data-page="pages/order/order.html" data-title="จัดการคำสั่งซื้อ">📦 ส่งสินค้า</button>
+      <button class="menu-btn w-full text-left px-3 py-2 rounded hover:bg-pink-700 transition" data-page="pages/users/users.html" data-title="จัดการผู้ใช้" data-role="admin">👥 ผู้ใช้</button>
+    </nav>
+    <button id="logout-btn" class="mt-6 w-full bg-red-500 hover:bg-red-600 px-4 py-2 rounded">🚪 ออกจากระบบ</button>
+  </aside>
+
+  <!-- ✅ Main Content -->
+  <main class="ml-64 p-6 w-full">
+    <div id="breadcrumb" class="text-sm text-gray-500 mb-4">🏠 หน้าหลัก</div>
+
+    <div id="spinner" class="hidden text-center py-20 text-pink-500">
+      <svg class="animate-spin h-8 w-8 mx-auto mb-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z"></path>
+      </svg>
+      <p>กำลังโหลด...</p>
+    </div>
+
+    <div id="main-content" class="bg-white rounded-xl shadow p-6 min-h-[300px]">
+      <h2 class="text-xl font-bold text-gray-700">👋 ยินดีต้อนรับสู่แอดมิน!</h2>
+      <p class="text-gray-500 mt-2">เลือกเมนูจากแถบด้านซ้ายเพื่อเริ่มต้นจัดการข้อมูล</p>
+    </div>
+  </main>
+
+  <!-- ✅ Script: Dynamic Loader -->
+  <script type="module">
+    const userRole = window.userRole || 'guest';
+
+    const spinner = document.getElementById('spinner');
+    const content = document.getElementById('main-content');
+    const breadcrumb = document.getElementById('breadcrumb');
+
+    async function loadPage(pagePath, title) {
+      spinner.classList.remove('hidden');
+      content.classList.add('hidden');
+
+      try {
+        // Load HTML
+        const res = await fetch(pagePath);
+        const html = await res.text();
+        content.innerHTML = html;
+
+        // Load related JS from same folder
+        const jsPath = pagePath.replace(/\.html$/, '.js');
+        await import(`./${jsPath}`).catch(() => {});
+
+        // Update breadcrumb
+        breadcrumb.innerHTML = `🏠 <span class="text-gray-700">›</span> ${title}`;
+      } catch (err) {
+        content.innerHTML = '<p class="text-red-500">❌ โหลดเนื้อหาไม่สำเร็จ</p>';
+      }
+
+      spinner.classList.add('hidden');
+      content.classList.remove('hidden');
+    }
+
+    document.querySelectorAll('.menu-btn').forEach(button => {
+      const role = button.dataset.role;
+      if (role && role !== userRole) {
+        button.classList.add('hidden');
+        return;
+      }
+
+      button.addEventListener('click', () => {
+        const page = button.dataset.page;
+        const title = button.dataset.title;
+        loadPage(page, title);
+      });
+    });
+
+    document.getElementById('logout-btn').addEventListener('click', () => {
+      import('./admin-auth.js').then(mod => {
+        mod.logout?.();
+      });
+    });
+
+    // 🏁 Load default page
+    window.addEventListener('DOMContentLoaded', () => {
+      if (window.userRole === 'admin') {
+        loadPage('pages/dashboard/dashboard.html', 'หน้าหลัก');
+      }
+    });
+  </script>
+
+</body>
+</html>

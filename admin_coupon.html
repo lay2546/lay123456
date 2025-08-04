@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="th">
+
+<head>
+  <meta charset="utf-8" />
+  <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+  <title>Admin จัดการคูปอง</title>
+  <link rel="icon" type="image/png" href="S__131055784-Photoroom.png" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="admin_coupon.js" type="module"></script>
+  <link rel="stylesheet" href="style.css" />
+</head>
+
+<body class="bg-gradient-to-br from-white to-gray-100 min-h-screen text-gray-800">
+  <!-- 🔝 Navbar -->
+  <div id="admin-header" class="fade-in"></div>
+
+  <!-- 🌟 Header -->
+  <section class="text-center py-8 fade-in px-4">
+    <h1 class="text-3xl sm:text-4xl md:text-5xl font-bold bg-clip-text mb-2">
+      🎟️ ระบบจัดการคูปองส่วนลด
+    </h1>
+  </section>
+
+  <!-- 🔘 รีเฟรชด้วยตนเอง -->
+  <div class="max-w-6xl mx-auto px-4 -mt-6 mb-4 text-right">
+    <button onclick="loadCoupons()" class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-xl text-sm shadow-md">
+      🔄 รีเฟรชข้อมูล
+    </button>
+  </div>
+
+  <!-- 🔸 Main -->
+  <main class="max-w-7xl mx-auto px-4 pb-20 grid grid-cols-1 lg:grid-cols-3 gap-8">
+    <!-- 📝 ฟอร์มเพิ่มคูปอง -->
+    <section class="order-2 lg:order-1">
+      <div class="glass-effect rounded-2xl shadow-xl p-6 hover-lift slide-in">
+        <h2 class="text-xl font-bold text-center text-gray-800 mb-6">➕ เพิ่มคูปองใหม่</h2>
+
+        <div class="space-y-4">
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">รหัสคูปอง</label>
+            <input id="code" type="text" placeholder="เช่น PONEY20"
+              class="w-full border-2 border-pink-200 p-3 rounded-xl focus:ring-4 focus:ring-pink-100 focus:outline-none" />
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">ส่วนลด (%)</label>
+            <input id="discount" type="number" placeholder="0-100" min="0" max="100"
+              class="w-full border-2 border-pink-200 p-3 rounded-xl focus:ring-4 focus:ring-pink-100 focus:outline-none" />
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">วันหมดอายุ</label>
+            <input id="expireDate" type="datetime-local"
+              class="w-full border-2 border-pink-200 p-3 rounded-xl focus:ring-4 focus:ring-pink-100 focus:outline-none" />
+          </div>
+
+          <button id="addCoupon"
+            class="w-full bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white font-bold py-3 rounded-xl transition-all hover:scale-105">
+            🌟 เพิ่มคูปอง
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- 📋 ตารางคูปอง -->
+    <section class="order-1 lg:order-2 col-span-1 lg:col-span-2">
+      <div class="glass-effect rounded-2xl shadow-xl overflow-hidden hover-lift slide-in">
+        <div class="bg-gradient-to-r from-purple-600 to-indigo-600 px-6 py-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2">
+          <h2 class="text-lg sm:text-xl font-bold text-white">📋 รายการคูปองทั้งหมด</h2>
+          <div class="bg-white bg-opacity-20 px-3 py-1 rounded-full">
+            <span class="text-white text-sm font-medium" id="couponCount">0 คูปอง</span>
+          </div>
+        </div>
+
+        <div class="overflow-x-auto">
+          <table class="w-full min-w-[500px]">
+            <thead class="bg-gray-50">
+              <tr>
+                <th class="px-4 py-3 text-left text-sm font-bold text-gray-700">🏷️ รหัสคูปอง</th>
+                <th class="px-4 py-3 text-left text-sm font-bold text-gray-700">💰 ส่วนลด</th>
+                <th class="px-4 py-3 text-left text-sm font-bold text-gray-700">📅 หมดอายุ</th>
+                <th class="px-4 py-3 text-center text-sm font-bold text-gray-700">⚙️ จัดการ</th>
+              </tr>
+            </thead>
+            <tbody class="bg-white divide-y divide-gray-200" id="couponTable">
+              <!-- Dynamic Data -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- 📈 สถิติ & คำสั่งซื้อ -->
+  <section class="max-w-6xl mx-auto px-4 grid grid-cols-1 md:grid-cols-2 gap-8 mb-20">
+    <!-- สถิติ -->
+    <div class="glass-effect rounded-2xl shadow-xl p-6 fade-in">
+      <h3 class="text-xl font-bold text-gray-800 mb-4">📊 สถิติการใช้งาน</h3>
+      <div class="grid grid-cols-2 gap-4">
+        <div class="bg-blue-50 p-4 rounded-xl text-center">
+          <div class="text-2xl font-bold text-blue-600" data-stat="total">0</div>
+          <div class="text-sm text-blue-500">คูปองทั้งหมด</div>
+        </div>
+        <div class="bg-green-50 p-4 rounded-xl text-center">
+          <div class="text-2xl font-bold text-green-600" data-stat="active">0</div>
+          <div class="text-sm text-green-500">กำลังใช้งาน</div>
+        </div>
+        <div class="bg-yellow-50 p-4 rounded-xl text-center">
+          <div class="text-2xl font-bold text-yellow-600" data-stat="expired">0</div>
+          <div class="text-sm text-yellow-500">หมดอายุ</div>
+        </div>
+        
+      </div>
+    </div>
+
+    <!-- คำสั่งซื้อ -->
+    <div class="glass-effect rounded-2xl shadow-xl p-6 fade-in">
+      <h3 class="text-xl font-bold text-gray-800 mb-4">🛒 คำสั่งซื้อที่ใช้คูปอง</h3>
+      <div class="space-y-3 max-h-64 overflow-y-auto" id="couponOrders">
+        <!-- Dynamic Orders -->
+      </div>
+      <div class="mt-4 pt-4 border-t border-gray-200 flex justify-between">
+        <span class="font-medium text-gray-700">ส่วนลดรวม:</span>
+        <span class="text-xl font-bold text-green-600" data-total="discount">-0฿</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- 🌐 Language -->
+  <div class="fixed bottom-5 right-5 z-50">
+    <button id="lang-toggle"
+      class="w-12 h-12 rounded-full bg-gradient-to-r from-pink-500 to-blue-500 text-white text-2xl shadow-lg hover:scale-110 transition">
+      🇺🇸
+    </button>
+  </div>
+
+  <script src="lang-switcher.js"></script>
+  <script type="module">
+    import { loadAdminHeader } from './default_load.js';
+    loadAdminHeader();
+  </script>
+</body>
+
+</html>

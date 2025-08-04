@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>My Profile</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link href="home.css" rel="stylesheet"/>
+<script src="firebase.js" type="module"></script>
+<script src="firebase-auth-modal.js" type="module"></script>
+</head>
+<body class="bg-gray-100 min-h-screen">
+<header class="top-bar" id="top-bar">
+<h1 class="top-bar-title logo-text">Le Poney</h1>
+<div class="top-bar-buttons">
+<button class="menu-button" id="menu-btn">☰</button>
+</div>
+</header>
+<div class="overlay hidden" id="overlay"></div>
+<aside class="sidebar" id="sidebar">
+<div class="sidebar-header">
+<button class="close-button" id="close-btn">×</button>
+</div>
+<nav class="sidebar-nav">
+<a class="nav-link" data-translate="home" href="Home.html">🏡 Home</a>
+<!-- 🔽 Product Menu -->
+<div class="dropdown">
+<button class="dropdown-btn">
+          🛍️ Products <span class="arrow">▾</span>
+</button>
+<div class="dropdown-content">
+<a class="dropdown-link" href="Product.html">🍰 Bakery &amp; Sweets</a>
+<a class="dropdown-link" href="Product2.html">🥤 Smoothies &amp; Others</a>
+</div>
+</div>
+<!-- 🔗 More Menu -->
+<a class="nav-link" data-translate="cart" href="Cart.html" id="cart-menu">🛒 Cart <span id="cart-count">(0)</span></a>
+<a class="nav-link hidden" href="OrderHistory.html" id="order-history-link">📋 Order History</a>
+<a class="nav-link" data-translate="delivery" href="Delivery.html">🚚 Delivery</a>
+<a class="nav-link" data-translate="event" href="Event.html">📅 Events</a>
+<!-- 🔐 Login / Logout -->
+<a class="nav-link cursor-pointer" id="login-btn">🔑 Login</a>
+<a class="nav-link cursor-pointer hidden" id="logout-btn">🚪 Logout</a>
+</nav>
+</aside>
+<!-- User Profile Information -->
+<div class="w-full max-w-3xl p-6 bg-white rounded-lg shadow-xl mx-auto mt-16">
+<h1 class="text-3xl font-bold text-center text-green-600 mb-6">👤 Your Profile Information</h1>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+<div>
+<label class="block text-sm font-medium text-gray-700" for="profile-name">Full Name</label>
+<input class="mt-1 block w-full border-gray-300 rounded-md shadow-sm" id="profile-name" placeholder="Full name" type="text"/>
+</div>
+<div>
+<label class="block text-sm font-medium text-gray-700" for="profile-username">Username</label>
+<input class="mt-1 block w-full border-gray-300 rounded-md shadow-sm" id="profile-username" placeholder="Username" type="text"/>
+</div>
+<div>
+<label class="block text-sm font-medium text-gray-700" for="profile-email">Email</label>
+<input class="mt-1 block w-full border-gray-300 rounded-md shadow-sm" disabled="" id="profile-email" placeholder="Email" type="email"/>
+</div>
+<div>
+<label class="block text-sm font-medium text-gray-700" for="profile-phone">Phone Number</label>
+<input class="mt-1 block w-full border-gray-300 rounded-md shadow-sm" id="profile-phone" placeholder="Phone number" type="tel"/>
+</div>
+<div class="col-span-1 md:col-span-2">
+<label class="block text-sm font-medium text-gray-700" for="profile-address">Shipping Address</label>
+<textarea class="mt-1 block w-full border-gray-300 rounded-md shadow-sm" id="profile-address" placeholder="Shipping address" rows="3"></textarea>
+</div>
+</div>
+<!-- Save Button -->
+<button class="mt-6 bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700" id="save-profile-btn">
+      💾 Save Profile
+    </button>
+</div>
+<!-- Order History Section -->
+<div class="w-full max-w-4xl p-6 bg-white rounded-lg shadow-xl mx-auto mt-10">
+<h2 class="text-2xl font-bold text-center text-pink-600 mb-6">📦 Order History</h2>
+<div class="mb-6">
+<h3 class="text-lg font-semibold mb-2">📍 Latest Shipping Address</h3>
+<div class="bg-gray-100 p-4 rounded" id="address-info"></div>
+<button class="mt-2 bg-yellow-400 text-white px-4 py-2 rounded" id="edit-address-btn">✏️ Edit Address</button>
+</div>
+<div class="mb-6 flex flex-wrap items-center gap-4">
+<div>
+<label class="block text-sm font-semibold" for="filter-date">📅 Select Date:</label>
+<input class="border p-2 rounded" id="filter-date" type="date"/>
+</div>
+<button class="bg-pink-600 text-white px-4 py-2 rounded hover:bg-pink-700 mt-6" id="search-btn">
+        🔍 Search
+      </button>
+</div>
+<ul class="space-y-6" id="order-list"></ul>
+</div>
+<!-- Scripts -->
+<script src="script.js"></script>
+<script src="firebase-auth-modal.js" type="module"></script>
+<script src="order-history.js" type="module"></script>
+<script src="redirect-to-admin.js" type="module"></script>
+<script src="profile.js" type="module"></script>
+<div class="fixed bottom-5 right-5 z-50 flex flex-col gap-3"><button class="w-12 h-12 rounded-full bg-pink-500 text-white text-2xl shadow-lg hover:bg-pink-600 hover:scale-110 transition" id="lang-th">🇹🇭</button><button class="w-12 h-12 rounded-full bg-blue-500 text-white text-2xl shadow-lg hover:bg-blue-600 hover:scale-110 transition" id="lang-en">🇺🇸</button></div><script src="lang-switcher.js"></script></body>
+</html>

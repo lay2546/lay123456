@@ -1,0 +1,71 @@
+<!-- header -->
+<header class="sticky top-0 z-50 gradient-bg text-white shadow-2xl relative overflow-hidden">
+    <div class="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent animate-pulse"></div>
+    <div class="container mx-auto px-6 py-6 relative z-10">
+        <div class="flex flex-col lg:flex-row justify-between items-center gap-4 relative">
+            <div class="flex items-center gap-3">
+                <div class="rounded-full flex items-center justify-center">
+                    <img src="S__131055784-Photoroom.png" alt="Logo" class="w-16 h-16 object-contain" />
+                </div>
+                <h1 class="text-3xl font-bold bg-gradient-to-r from-white to-pink-100 bg-clip-text text-transparent">
+                    Admin Panel
+                </h1>
+            </div>
+
+            <!-- Toggle button for mobile -->
+            <button id="menu-toggle" class="lg:hidden text-white text-3xl absolute top-0 right-0">
+                ☰
+            </button>
+
+            <!-- Desktop menu -->
+            <nav class="hidden lg:flex flex-wrap justify-center gap-2 text-sm">
+                <a class="nav-link px-4 py-2 rounded-lg bg-white/10 hover:bg-white/20 transition-all duration-300 font-medium"
+                    href="admin_dashboard.html">📈 แดชบอร์ด</a>
+                <a class="nav-link px-4 py-2 rounded-lg bg-white/10 hover:bg-white/20 transition-all duration-300 font-medium"
+                    href="admin_product.html">➕ เพิ่มสินค้า</a>
+                <a class="nav-link px-4 py-2 rounded-lg bg-white/20 hover:bg-white/30 transition-all duration-300 font-medium"
+                    href="admin_order.html">📦 ส่งสินค้า</a>
+                <a class="nav-link px-4 py-2 rounded-lg bg-white/10 hover:bg-white/20 transition-all duration-300 font-medium"
+                    href="admin_coupon.html">🎟 ส่วนลด</a>
+                <a class="nav-link px-4 py-2 rounded-lg bg-white/10 hover:bg-white/20 transition-all duration-300 font-medium"
+                    href="admin_users.html">👥 จัดการผู้ใช้</a>
+                <button id="logout-btn-desktop"
+                    class="px-4 py-2 rounded-lg bg-red-500 hover:bg-red-600 text-white font-medium transition-all duration-300 hidden lg:block">
+                    🚪 ออกจากระบบ
+                </button>
+            </nav>
+        </div>
+    </div>
+</header>
+
+<!-- mobile menu -->
+<div id="mobile-menu"
+    class="fixed inset-0 bg-pink-600 text-white translate-x-full transition-all duration-300 z-50 flex flex-col justify-between">
+    <div class="p-4 flex justify-end">
+        <button id="menu-close" class="text-2xl">✕</button>
+    </div>
+    <nav class="flex flex-col justify-center px-10 flex-1 space-y-6 text-lg">
+        <a href="admin_dashboard.html" class="text-center py-3 rounded hover:bg-pink-700 transition">📈 แดชบอร์ด</a>
+        <a href="admin_product.html" class="text-center py-3 rounded hover:bg-pink-700 transition">➕
+            เพิ่มสินค้า</a>
+        <a href="admin_order.html" class="text-center py-3 rounded hover:bg-pink-700 transition">📦 คำสั่งซื้อ</a>
+        <a href="admin_coupon.html" class="text-center py-3 rounded hover:bg-pink-700 transition">🎟 ส่วนลด</a>
+        <a href="admin_users.html" class="text-center py-3 rounded hover:bg-pink-700 transition">👥 ผู้ใช้</a>
+    </nav>
+    <div class="px-10 pb-6">
+        <button id="logout-btn-mobile"
+            class="w-full text-center py-3 bg-red-500 hover:bg-red-600 rounded text-white font-semibold transition">
+            🚪 ออกจากระบบ
+        </button>
+    </div>
+</div>
+
+<!-- script -->
+<script>
+    const toggle = document.getElementById("menu-toggle");
+    const close = document.getElementById("menu-close");
+    const mobileMenu = document.getElementById("mobile-menu");
+
+    toggle?.addEventListener("click", () => mobileMenu.classList.remove("translate-x-full"));
+    close?.addEventListener("click", () => mobileMenu.classList.add("translate-x-full"));
+</script>

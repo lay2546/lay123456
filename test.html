@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>เพิ่มสินค้าใหม่</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<body class="font-kanit bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500 min-h-screen py-8">
+    <div class="container mx-auto px-4 max-w-2xl">
+        <div class="backdrop-blur-lg bg-white/95 rounded-2xl shadow-2xl border p-8 animate-pulse"
+            style="animation: slideIn 0.5s ease-out; animation-fill-mode: both;">
+
+            <div class="text-center mb-8">
+                <div
+                    class="w-16 h-16 bg-gradient-to-r from-pink-500 to-purple-600 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <span class="text-2xl">📦</span>
+                </div>
+                <h2
+                    class="text-3xl font-bold bg-gradient-to-r from-pink-600 to-purple-600 bg-clip-text text-transparent">
+                    เพิ่มสินค้าใหม่
+                </h2>
+                <p class="text-gray-600 mt-2">กรอกข้อมูลสินค้าของคุณ</p>
+            </div>
+
+            <form id="product-form" class="space-y-6">
+                <input type="hidden" id="edit-id" />
+
+                <!-- ชื่อสินค้า -->
+                <div class="relative">
+                    <input type="text" id="name"
+                        class="input-field w-full px-4 py-3 rounded-lg text-gray-800 placeholder-transparent border-2 border-gray-300 focus:border-pink-500 focus:ring-4 focus:ring-pink-500/10 transition-all"
+                        placeholder="ชื่อสินค้า" required />
+                    <label for="name" class="floating-label text-gray-500">🏷️ ชื่อสินค้า</label>
+                    <div class="absolute right-3 top-3 text-gray-400">
+                        <span id="nameLength">0</span>/50
+                    </div>
+                </div>
+
+                <!-- ราคาและต้นทุน -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                    <div class="relative">
+                        <input type="number" id="price"
+                            class="input-field w-full px-4 py-3 rounded-lg text-gray-800 placeholder-transparent border-2 border-gray-300 focus:border-pink-500 focus:ring-4 focus:ring-pink-500/10 transition-all"
+                            placeholder="ราคา" required />
+                        <label for="price" class="floating-label text-gray-500">💰 ราคาขาย (บาท)</label>
+                    </div>
+
+                    <!-- เมนูประจำวันและตัวเลือกเพิ่มเติม -->
+                    <div class="relative">
+                        <div class="bg-yellow-50 p-4 rounded-xl border border-yellow-200">
+                            <label class="flex items-center gap-3 cursor-pointer">
+                                <div class="relative">
+                                    <input type="checkbox" id="isDailySpecial" class="sr-only" />
+                                    <div
+                                        class="toggle-bg w-12 h-6 bg-gray-300 rounded-full shadow-inner transition-colors duration-300">
+                                    </div>
+                                    <div
+                                        class="toggle-dot absolute w-5 h-5 bg-white rounded-full shadow-md top-0.5 left-0.5 transition-transform duration-300">
+                                    </div>
+                                </div>
+                                <span class="text-sm font-medium">🌟 เมนูประจำวัน</span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- หมวดหมู่และแท็ก -->
+                <div>
+                    <label class="block text-sm font-semibold text-gray-700 mb-3">🏪 หมวดหมู่สินค้า</label>
+                    <div class="grid grid-cols-2 gap-4 mb-4">
+                        <div class="border-2 border-gray-300 hover:border-pink-500 hover:-translate-y-1 transition-all duration-300 cursor-pointer p-4 rounded-xl text-center"
+                            data-category="bakery">
+                            <div class="text-3xl mb-2">🍰</div>
+                            <div class="text-sm font-medium">Bakery</div>
+                        </div>
+                        <div class="border-2 border-gray-300 hover:border-pink-500 hover:-translate-y-1 transition-all duration-300 cursor-pointer p-4 rounded-xl text-center"
+                            data-category="smoothie">
+                            <div class="text-3xl mb-2">🥤</div>
+                            <div class="text-sm font-medium">Smoothie</div>
+                        </div>
+                    </div>
+                    <input type="hidden" id="category" value="bakery" />
+                </div>
+
+                <!-- จำนวนและส่วนลด -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                    <div class="relative">
+                        <input type="number" id="quantity"
+                            class="input-field w-full px-4 py-3 rounded-lg text-gray-800 placeholder-transparent border-2 border-gray-300 focus:border-pink-500 focus:ring-4 focus:ring-pink-500/10 transition-all"
+                            placeholder="จำนวน" />
+                        <label for="quantity" class="floating-label text-gray-500">📊 จำนวนคงเหลือ</label>
+                    </div>
+                    <div class="relative">
+                        <input type="number" id="discount" value="0" min="0" max="100"
+                            class="input-field w-full px-4 py-3 rounded-lg text-gray-800 placeholder-transparent border-2 border-gray-300 focus:border-pink-500 focus:ring-4 focus:ring-pink-500/10 transition-all"
+                            placeholder="ส่วนลด" />
+                        <label for="discount" class="floating-label text-gray-500">🎯 ส่วนลด (%)</label>
+                        <div class="absolute right-3 top-3">
+                            <span id="discountedPrice" class="text-xs text-gray-500"></span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- รูปภาพ -->
+                <div>
+                    <label class="block text-sm font-semibold text-gray-700 mb-3">📷 รูปภาพสินค้า</label>
+
+                    <!-- URL Input -->
+                    <div class="relative mb-4">
+                        <input type="url" id="imageUrlInput"
+                            class="input-field w-full px-4 py-3 rounded-lg text-gray-800 placeholder-transparent border-2 border-gray-300 focus:border-pink-500 focus:ring-4 focus:ring-pink-500/10 transition-all"
+                            placeholder="URL รูปภาพ" />
+                        <label for="imageUrlInput" class="floating-label text-gray-500">🌐 URL รูปภาพ</label>
+                    </div>
+
+                    <div class="text-center text-gray-500 text-sm mb-4">หรือ</div>
+
+                    <!-- File Upload -->
+                    <div class="border-2 border-dashed border-gray-300 hover:border-pink-500 hover:bg-pink-50/50 transition-all duration-300 rounded-xl p-8 text-center"
+                        id="dropZone">
+                        <div class="upload-content">
+                            <div class="text-4xl mb-4">📤</div>
+                            <p class="text-gray-600 mb-2">ลากและวางรูปภาพที่นี่</p>
+                            <p class="text-sm text-gray-500 mb-4">หรือคลิกเพื่อเลือกไฟล์</p>
+                            <input type="file" id="imageFileInput" accept="image/*" class="hidden" />
+                            <button type="button" id="selectFileBtn"
+                                class="bg-gray-200 hover:bg-gray-300 px-4 py-2 rounded-lg text-sm transition-colors">
+                                เลือกไฟล์
+                            </button>
+                        </div>
+                    </div>
+
+                    <input type="hidden" id="imageUrl" />
+                    <div id="imagePreviewContainer" class="mt-4 hidden">
+                        <img id="imagePreview" class="w-full max-h-60 rounded-xl border object-cover" />
+                        <button type="button" id="removeImageBtn" class="mt-2 text-red-500 hover:text-red-700 text-sm">
+                            🗑️ ลบรูปภาพ
+                        </button>
+                    </div>
+                </div>
+
+                <!-- ปุ่มบันทึก -->
+                <button type="submit"
+                    class="w-full py-4 rounded-xl text-white font-semibold text-lg shadow-lg bg-gradient-to-r from-pink-500 to-purple-600 hover:-translate-y-1 hover:shadow-xl hover:shadow-pink-500/25 transition-all duration-300">
+                    <span class="flex items-center justify-center gap-2">
+                        <span>✅</span>
+                        <span id="submitText">บันทึกสินค้า</span>
+                    </span>
+                </button>
+
+                <!-- สถานะ -->
+                <div id="status" class="text-center text-sm mt-4 p-3 rounded-lg hidden"></div>
+            </form>
+        </div>
+    </div>
+</body>
+
+</html>

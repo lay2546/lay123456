@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="th">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Admin รายการผู้ใช้</title>
+    <link rel="icon" type="image/png" href="S__131055784-Photoroom.png" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="style.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+</head>
+
+<body class="bg-gradient-to-br from-white to-gray-100 min-h-screen text-gray-800">
+    <div id="admin-header"></div>
+
+    <!-- 🌟 Header -->
+    <section class="text-center py-8 fade-in px-4">
+        <h1 class="text-3xl sm:text-4xl md:text-5xl font-bold bg-clip-text mb-2">
+            👥 รายชื่อผู้ใช้ทั้งหมด
+        </h1>
+    </section>
+
+    <!-- 📊 Stats -->
+    <div class="max-w-7xl mx-auto px-4">
+        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+            <div class="glass-effect p-5 rounded-xl shadow-md hover:shadow-lg transition">
+                <div class="flex items-center">
+                    <div class="p-3 rounded-full bg-gradient-to-r from-blue-500 to-purple-600 text-white">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
+                            <g clip-path="url(#clip0_3111_32656)">
+                                <path
+                                    d="M12.68 3.96C13.16 4.67 13.44 5.52 13.44 6.44C13.43 8.84 11.54 10.79 9.16 10.87C9.06 10.86 8.94 10.86 8.83 10.87C6.45 10.79 4.56 8.84 4.56 6.44C4.56 3.99 6.54 2 9 2"
+                                    stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                                <path
+                                    d="M16.41 4C18.35 4 19.91 5.57 19.91 7.5C19.91 9.39 18.41 10.93 16.54 11C16.46 10.99 16.37 10.99 16.28 11"
+                                    stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                                <path
+                                    d="M4.16 14.56C1.74 16.18 1.74 18.82 4.16 20.43C6.91 22.27 11.42 22.27 14.17 20.43C16.59 18.81 16.59 16.17 14.17 14.56C11.43 12.73 6.92 12.73 4.16 14.56Z"
+                                    stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                                <path
+                                    d="M18.34 20C19.06 19.85 19.74 19.56 20.3 19.13C21.86 17.96 21.86 16.03 20.3 14.86C19.75 14.44 19.08 14.16 18.37 14"
+                                    stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                            </g>
+                            <defs>
+                                <clipPath id="clip0_3111_32656">
+                                    <rect width="24" height="24" fill="white" />
+                                </clipPath>
+                            </defs>
+                        </svg>
+                    </div>
+                    <div class="ml-4">
+                        <p class="text-sm text-gray-500">จำนวนผู้ใช้ทั้งหมด</p>
+                        <p class="text-xl font-bold" id="total-users">0</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="glass-effect p-5 rounded-xl shadow-md hover:shadow-lg transition">
+                <div class="flex items-center">
+                    <div class="p-3 rounded-full bg-gradient-to-r from-green-500 to-emerald-600 text-white">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
+                            <g clip-path="url(#clip0_3111_32655)">
+                                <path d="M14.44 19.0503L15.96 20.5703L19 17.5303" stroke="#fff" stroke-width="2"
+                                    stroke-linecap="round" stroke-linejoin="round" />
+                                <path
+                                    d="M11.99 21.8097C10.17 21.8097 8.36001 21.3497 6.98001 20.4297C4.56001 18.8097 4.56001 16.1697 6.98001 14.5597C9.73001 12.7197 14.24 12.7197 16.99 14.5597"
+                                    stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                                <path
+                                    d="M15.68 3.96C16.16 4.67 16.44 5.52 16.44 6.44C16.43 8.84 14.54 10.79 12.16 10.87C12.06 10.86 11.94 10.86 11.83 10.87C9.45 10.79 7.56 8.84 7.56 6.44C7.56 3.99 9.54 2 12 2"
+                                    stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                            </g>
+                            <defs>
+                                <clipPath id="clip0_3111_32655">
+                                    <rect width="24" height="24" fill="white" />
+                                </clipPath>
+                            </defs>
+                        </svg>
+                    </div>
+                    <div class="ml-4">
+                        <p class="text-sm text-gray-500">ผู้ใช้ใหม่วันนี้</p>
+                        <p class="text-xl font-bold" id="new-users-today">0</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="glass-effect p-5 rounded-xl shadow-md hover:shadow-lg transition">
+                <div class="flex items-center">
+                    <div class="p-3 rounded-full bg-gradient-to-r from-orange-500 to-red-600 text-white">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
+                            <g clip-path="url(#clip0_4418_3557)">
+                                <path
+                                    d="M20.4099 17.03H3.61986L3.52986 17.53C3.23986 19.99 3.99987 22 7.49987 22H16.4899C19.9999 22 20.7599 19.99 20.4599 17.53L19.5599 10.03C19.3299 8.09 18.9899 6.5 15.5899 6.5H8.38986C4.98986 6.5 4.64986 8.09 4.41986 10.03L4.09987 12.7L4.00986 13.43"
+                                    stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                                <path d="M8 8V4.5C8 3 9 2 10.5 2H13.5C15 2 16 3 16 4.5V8" stroke="#fff" stroke-width="2"
+                                    stroke-linecap="round" stroke-linejoin="round" />
+                            </g>
+                            <defs>
+                                <clipPath id="clip0_4418_3557">
+                                    <rect width="24" height="24" fill="white" />
+                                </clipPath>
+                            </defs>
+                        </svg>
+                    </div>
+                    <div class="ml-4">
+                        <p class="text-sm text-gray-500">คำสั่งซื้อทั้งหมด</p>
+                        <p class="text-xl font-bold" id="total-orders">0</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 🔍 Search + Filter + Export -->
+    <div class="max-w-6xl mx-auto mt-6 px-4">
+        <div class="glass-effect p-4 rounded-2xl shadow-md">
+            <div class="flex flex-col md:flex-row gap-4 justify-between items-center">
+                <input type="text" id="search-user" placeholder="🔍 ค้นหาชื่อหรืออีเมลผู้ใช้..."
+                    class="w-full md:max-w-md px-4 py-2 border rounded-xl focus:ring-2 focus:ring-pink-400 transition" />
+
+                <div class="flex flex-wrap items-center gap-2">
+                    <select id="filter-role" class="border p-2 rounded text-sm">
+                        <option value="">📂 ทุกบทบาท</option>
+                        <option value="admin">👑 ผู้ดูแลระบบ</option>
+                        <option value="user">🙋‍♂️ ผู้ใช้งานทั่วไป</option>
+                    </select>
+
+                    <button id="export-excel"
+                        class="bg-gradient-to-r from-green-500 to-emerald-600 text-white px-4 py-2 rounded-xl shadow hover:scale-105 transition">
+                        📥 ส่งออก Excel
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 📋 Table -->
+    <div class="max-w-6xl mx-auto mt-6 px-4 pb-10">
+        <div class="glass-effect rounded-xl shadow-lg overflow-hidden">
+            <div class="overflow-x-auto">
+                <table class="min-w-full text-sm">
+                    <thead class="bg-gradient-to-r from-pink-500 via-purple-500 to-blue-500 text-white">
+                        <tr>
+                            <th class="text-left p-4 whitespace-nowrap">👤 ชื่อผู้ใช้</th>
+                            <th class="text-left p-4 whitespace-nowrap">📧 อีเมล</th>
+                            <th class="text-left p-4 whitespace-nowrap">📱 เบอร์โทร</th>
+                            <th class="text-left p-4 whitespace-nowrap">📆 สมัครเมื่อ</th>
+                            <th class="text-center p-4 whitespace-nowrap">📦 คำสั่งซื้อ</th>
+                            <th class="text-center p-4 whitespace-nowrap">📍 ที่อยู่</th>
+                            <th class="text-center p-4 whitespace-nowrap">⚡ จัดการ</th>
+                        </tr>
+                    </thead>
+                    <tbody id="user-table-body" class="divide-y divide-gray-200">
+                        <!-- JS render rows -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- 📍 Modal ดูที่อยู่ -->
+    <div id="address-modal" class="hidden fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center">
+        <div class="bg-white p-6 rounded-xl shadow-xl max-w-md w-full relative">
+            <button id="close-address-modal"
+                class="absolute top-2 right-2 text-gray-600 hover:text-red-500 text-xl">✖</button>
+            <h2 class="text-lg font-semibold mb-2">📍 ที่อยู่ผู้ใช้</h2>
+            <p id="address-content" class="text-gray-700 whitespace-pre-line">กำลังโหลด...</p>
+        </div>
+    </div>
+
+    <!-- 📝 Modal แก้ไขข้อมูลผู้ใช้ -->
+    <div id="edit-user-modal" class="hidden fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center">
+        <div class="bg-white p-6 rounded-xl shadow-xl max-w-md w-full relative">
+            <button id="close-edit-user-modal"
+                class="absolute top-2 right-2 text-gray-600 hover:text-red-500 text-xl">✖</button>
+            <h2 class="text-lg font-semibold mb-4">📝 แก้ไขข้อมูลผู้ใช้</h2>
+            <form id="edit-user-form" class="flex flex-col gap-3">
+                <input type="text" id="edit-name" placeholder="ชื่อผู้ใช้" class="border rounded p-2" required />
+                <input type="email" id="edit-email" placeholder="อีเมล" class="border rounded p-2" required />
+                <input type="text" id="edit-phone" placeholder="เบอร์โทร" class="border rounded p-2" />
+                <select id="edit-role" class="border rounded p-2">
+                    <option value="user">ผู้ใช้งานทั่วไป</option>
+                    <option value="admin">ผู้ดูแลระบบ</option>
+                </select>
+                <button type="submit" class="bg-blue-500 text-white py-2 rounded hover:bg-blue-600">💾 บันทึก</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- 🌐 Language -->
+    <div class="fixed bottom-5 right-5 z-50">
+        <button id="lang-toggle"
+            class="w-12 h-12 rounded-full bg-gradient-to-r from-pink-500 to-blue-500 text-white text-2xl shadow-lg hover:scale-110 transition">
+            🇺🇸
+        </button>
+    </div>
+
+    <!-- ✅ Scripts -->
+    <script src="firebase.js" type="module"></script>
+    <script src="admin_users.js" type="module"></script>
+    <script src="lang-switcher.js"></script>
+    <script type="module">
+        import { loadAdminHeader } from './default_load.js';
+        loadAdminHeader();
+    </script>
+</body>
+
+</html>

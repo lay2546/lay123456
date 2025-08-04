@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="th">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admin เพิ่มสินค้า</title>
+  <link rel="icon" type="image/png" href="S__131055784-Photoroom.png" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script type="module" src="firebase.js"></script>
+  <link href="style.css" rel="stylesheet" />
+</head>
+
+<body class="bg-gradient-to-br from-white to-gray-100 min-h-screen text-gray-800">
+  <!-- 🔝 Navbar -->
+  <div id="admin-header"></div>
+
+  <!-- 🌟 Header -->
+  <section class="text-center py-8 fade-in px-4">
+    <h1 class="text-3xl sm:text-4xl md:text-5xl font-bold bg-clip-text mb-2">
+      🗂️ รายการสินค้า
+    </h1>
+  </section>
+
+  <main class="max-w-7xl mx-auto p-4 grid grid-cols-1 md:grid-cols-3 gap-6">
+    <!-- รายการสินค้า -->
+    <section class="md:col-span-2">
+      <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+        <!-- <h2 class="text-xl font-bold">🗂️ รายการสินค้า</h2> -->
+        <button id="filter-toggle"
+          class="sm:hidden bg-pink-600 text-white px-4 py-2 rounded-lg flex items-center gap-2">
+          <span>🔍</span> <span>ตัวกรอง</span>
+        </button>
+      </div>
+
+      <div id="filter-section"
+        class="mb-6 bg-white rounded-xl shadow-sm border p-4 space-y-4 sm:space-y-0 hidden sm:grid sm:grid-cols-[1fr_auto_auto] sm:gap-4 sm:items-end">
+        <!-- ค้นหา -->
+        <div class="sm:col-span-1">
+          <label class="block text-sm font-medium text-gray-700 mb-1">ค้นหา</label>
+          <div class="relative">
+            <input id="search-input" type="text" placeholder="ค้นหาสินค้า..."
+              class="w-full border-2 border-gray-200 px-4 py-3 rounded-lg text-base focus:border-pink-500 focus:outline-none pl-10 transition-colors" />
+            <div class="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 text-lg">
+              🔍
+            </div>
+          </div>
+        </div>
+
+        <!-- หมวดหมู่ (แคบลง) -->
+        <div class="w-[150px]">
+          <label class="block text-sm font-medium text-gray-700 mb-1">หมวดหมู่</label>
+          <select id="filter-category"
+            class="w-full border-2 border-gray-200 px-3 py-3 rounded-lg text-base focus:border-pink-500 focus:outline-none">
+            <option value="all">📂 ทั้งหมด</option>
+            <option value="bakery">🍰 Bakery</option>
+            <option value="smoothie">🥤 Smoothie</option>
+          </select>
+        </div>
+
+        <!-- เรียงตาม (แคบลง) -->
+        <div class="w-[170px]">
+          <label class="block text-sm font-medium text-gray-700 mb-1">เรียงตาม</label>
+          <select id="sort-select"
+            class="w-full border-2 border-gray-200 px-3 py-3 rounded-lg text-base focus:border-pink-500 focus:outline-none">
+            <option value="default">📋 เรียงตาม...</option>
+            <option value="price-asc">⬆️ ราคาต่ำสุด</option>
+            <option value="price-desc">⬇️ ราคาสูงสุด</option>
+            <option value="latest">🕒 เพิ่มล่าสุด</option>
+            <option value="stock-desc">📦 จำนวนคงเหลือ</option>
+          </select>
+        </div>
+
+        <!-- Clear Filters Button -->
+        <div class="sm:col-span-3 flex justify-end pt-4 border-t border-gray-100">
+          <button id="clear-filters"
+            class="px-5 py-2 bg-gray-100 text-gray-600 hover:text-pink-600 hover:bg-pink-100 transition-colors text-sm rounded-lg whitespace-nowrap">
+            🗑️ ล้างตัวกรองทั้งหมด
+          </button>
+        </div>
+      </div>
+
+      <ul id="product-list" class="space-y-4"></ul>
+
+      <div class="flex justify-between items-center mt-6 flex-col sm:flex-row gap-4">
+        <p class="text-sm text-gray-600">🛒 สินค้าทั้งหมด: <span id="product-count"
+            class="font-semibold text-pink-600">0</span> รายการ</p>
+        <div id="pagination" class="flex gap-2 flex-wrap justify-center sm:justify-end"></div>
+      </div>
+    </section>
+
+    <!-- ฟอร์มเพิ่มสินค้า -->
+    <section
+      class="bg-white/90 backdrop-blur-md p-6 sm:p-8 rounded-xl shadow-xl w-full max-w-2xl mx-auto self-start border border-gray-200">
+      <h2 class="text-2xl font-bold text-pink-600 text-center mb-6">📦 เพิ่มสินค้าใหม่</h2>
+      <form id="product-form" class="space-y-6">
+        <input type="hidden" id="edit-id" />
+
+        <!-- ชื่อสินค้า -->
+        <div class="relative">
+          <label for="imagesList" class="block text-sm font-semibold text-gray-700 mb-1">🏷️ ชื่อสินค้า</label>
+          <input type="text" id="name"
+            class="w-full px-4 py-3 rounded-lg border-2 border-gray-300 text-gray-800 placeholder-transparent focus:border-pink-500 focus:ring-4 focus:ring-pink-500/10 transition"
+            placeholder="ชื่อสินค้า" required />
+        </div>
+
+        <!-- Row: ราคา & หมวดหมู่ -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div>
+            <label for="price" class="block text-sm font-semibold text-gray-700 mb-1">💰 ราคา (บาท)</label>
+            <input type="number" id="price"
+              class="w-full px-4 py-3 rounded-lg border-2 border-gray-300 focus:border-pink-500 focus:outline-none transition" />
+          </div>
+          <div>
+            <label for="category" class="block text-sm font-semibold text-gray-700 mb-1">🏪 หมวดหมู่</label>
+            <select id="category"
+              class="w-full px-4 py-3 rounded-lg border-2 border-gray-300 focus:border-pink-500 focus:outline-none transition">
+              <option value="bakery">🍰 Bakery</option>
+              <option value="smoothie">🥤 Smoothie</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Row: จำนวนสินค้า & ส่วนลด -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div>
+            <label for="quantity" class="block text-sm font-semibold text-gray-700 mb-1">📊 จำนวนคงเหลือ</label>
+            <input type="number" id="quantity"
+              class="w-full px-4 py-3 rounded-lg border-2 border-gray-300 focus:border-pink-500 focus:outline-none transition" />
+          </div>
+          <div>
+            <label for="discount" class="block text-sm font-semibold text-gray-700 mb-1">🎯 ส่วนลด (%)</label>
+            <input type="number" id="discount" min="0" max="100" value="0"
+              class="w-full px-4 py-3 rounded-lg border-2 border-gray-300 focus:border-pink-500 focus:outline-none transition" />
+          </div>
+        </div>
+
+        <!-- เมนูแนะนำ -->
+        <div class="flex items-center space-x-3 p-3 bg-yellow-50 border border-yellow-200 rounded-lg">
+          <input type="checkbox" id="isDailySpecial" class="h-5 w-5 text-pink-600 rounded focus:ring-pink-500" />
+          <label for="isDailySpecial" class="text-sm font-medium text-gray-700">🌟 เมนูประจำวัน</label>
+        </div>
+
+        <!-- รูปภาพเพิ่มเติม -->
+        <div>
+          <label for="imagesList" class="block text-sm font-semibold text-gray-700 mb-1">🖼️ รูปภาพเพิ่มเติม (URL
+            คั่นด้วย ,)</label>
+          <input type="text" id="imagesList"
+            class="w-full px-4 py-3 rounded-lg border-2 border-gray-300 focus:border-pink-500 focus:outline-none transition" />
+        </div>
+
+        <!-- รูปภาพหลัก -->
+        <div>
+          <label for="imageUrlInput" class="block text-sm font-semibold text-gray-700 mb-1">🌐 URL รูปภาพหลัก</label>
+          <input type="url" id="imageUrlInput"
+            class="w-full px-4 py-3 rounded-lg border-2 border-gray-300 focus:border-pink-500 focus:outline-none transition" />
+        </div>
+
+        <!-- อัปโหลดรูป -->
+        <div>
+          <label for="imageFileInput" class="block text-sm font-semibold text-gray-700 mb-1">📷
+            หรืออัปโหลดรูปภาพ</label>
+          <input type="file" id="imageFileInput" accept="image/*"
+            class="w-full px-4 py-3 rounded-lg border-2 border-gray-300 focus:border-pink-500 focus:outline-none transition" />
+        </div>
+
+        <input type="hidden" id="imageUrl" />
+        <img id="imagePreview" class="w-full max-h-60 rounded-lg shadow border object-contain hidden" />
+
+        <!-- Submit -->
+        <button type="submit"
+          class="w-full bg-gradient-to-r from-pink-600 to-pink-700 text-white py-3 rounded-lg hover:from-pink-700 hover:to-pink-800 transition font-semibold shadow-md hover:shadow-lg">
+          ✅ บันทึกสินค้า
+        </button>
+
+        <p id="status" class="text-center mt-4 text-sm text-gray-600"></p>
+      </form>
+    </section>
+
+  </main>
+
+  <!-- 🌐 Language -->
+  <div class="fixed bottom-5 right-5 z-50">
+    <button id="lang-toggle"
+      class="w-12 h-12 rounded-full bg-gradient-to-r from-pink-500 to-blue-500 text-white text-2xl shadow-lg hover:scale-110 transition">
+      🇺🇸
+    </button>
+  </div>
+
+  <script src="lang-switcher.js"></script>
+  <script src="admin-auth.js" type="module"></script>
+  <script type="module" src="admin-product.js"></script>
+  <script type="module">
+    import { loadAdminHeader } from './default_load.js';
+    loadAdminHeader();
+  </script>
+</body>
+
+</html>
