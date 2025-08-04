@@ -457,3 +457,78 @@ body {
         font-size: 2rem;
     }
 }
+/* 📱 รองรับมือถือ (≤ 576px) */
+@media (max-width: 576px) {
+  .top-bar-title {
+    font-size: 1.25rem;
+  }
+  .menu-button {
+    font-size: 1.25rem;
+  }
+
+  .modal-content {
+    padding: 1rem;
+    width: 90%;
+    max-width: 90%;
+  }
+
+  .day-box {
+    font-size: 0.85rem;
+    padding: 1rem;
+  }
+
+  .nav-title {
+    font-size: 1.1rem;
+  }
+
+  .nav-img {
+    height: auto;
+  }
+
+  .slider-section {
+    width: 100%;
+    height: auto;
+  }
+
+  .slider-inner img,
+  #slides img {
+    height: auto;
+    max-height: 200px;
+  }
+}
+
+/* 🧾 รองรับแท็บเล็ต (≤ 768px) */
+@media (max-width: 768px) {
+  .product-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .activities {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .modal-content {
+    padding: 1.5rem;
+    width: 100%;
+  }
+
+  .slider-inner img,
+  #slides img {
+    max-height: 250px;
+  }
+}
+
+/* 💻 รองรับเดสก์ท็อป (≥ 1024px) */
+@media (min-width: 1024px) {
+  .product-grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+
+  .activities {
+    grid-template-columns: repeat(4, 1fr);
+  }
+
+  .slider-inner img,
+  #slides img {
+    max-height: 400px;
+  }
+}
