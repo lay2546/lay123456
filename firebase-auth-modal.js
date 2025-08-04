@@ -30,7 +30,7 @@ document.addEventListener("DOMContentLoaded", () => {
       await signInWithEmailAndPassword(auth, email, password);
       alert("เข้าสู่ระบบสำเร็จ!");
       document.getElementById("login-modal")?.classList.add("hidden");
-      window.location.href = "index.html";
+      window.location.href = "Home.html";
     } catch (error) {
       alert("เข้าสู่ระบบล้มเหลว: " + error.message);
     }
@@ -62,7 +62,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
       alert("สมัครสมาชิกสำเร็จ!");
       document.getElementById("register-modal")?.classList.add("hidden");
-      window.location.href = "index.html";
+      window.location.href = "Home.html";
     } catch (error) {
       alert("สมัครไม่สำเร็จ: " + error.message);
     }
@@ -82,7 +82,7 @@ document.addEventListener("DOMContentLoaded", () => {
   logoutBtn?.addEventListener("click", async () => {
     await auth.signOut();
     alert("ออกจากระบบเรียบร้อยแล้ว");
-    window.location.href = "index.html";
+    window.location.href = "Home.html";
   });
 
   // 👁️ Show/Hide Login-Logout
@@ -154,7 +154,7 @@ document.getElementById("google-login-btn")?.addEventListener("click", async () 
     }
 
     alert("✅ เข้าสู่ระบบด้วย Google สำเร็จ!");
-    window.location.href = "index.html";
+    window.location.href = "Home.html";
 
   } catch (error) {
     console.error("❌ Login Failed:", error);

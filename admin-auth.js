@@ -6,7 +6,7 @@ import { doc, getDoc } from "https://www.gstatic.com/firebasejs/10.11.0/firebase
 onAuthStateChanged(auth, async (user) => {
   if (!user) {
     alert("กรุณาเข้าสู่ระบบก่อน");
-    window.location.href = "index.html";
+    window.location.href = "Home.html";
     return;
   }
 
@@ -16,7 +16,7 @@ onAuthStateChanged(auth, async (user) => {
 
     if (!userSnap.exists() || userSnap.data().role !== "admin") {
       alert("⛔️ หน้านี้สำหรับแอดมินเท่านั้น");
-      window.location.href = "index.html";
+      window.location.href = "Home.html";
       return;
     }
 
@@ -24,7 +24,7 @@ onAuthStateChanged(auth, async (user) => {
   } catch (err) {
     console.error("เกิดข้อผิดพลาดในการตรวจสอบสิทธิ์:", err);
     alert("เกิดข้อผิดพลาดในการตรวจสอบสิทธิ์");
-    window.location.href = "index.html";
+    window.location.href = "Home.html";
   }
 });
 
@@ -43,7 +43,7 @@ document.addEventListener("DOMContentLoaded", () => {
         await signOut(auth);
         localStorage.clear(); // เคลียร์ session
         alert("ออกจากระบบแล้ว");
-        window.location.href = "index.html";
+        window.location.href = "Home.html";
       } catch (error) {
         console.error("❌ ออกจากระบบไม่สำเร็จ:", error);
         alert("เกิดข้อผิดพลาดในการออกจากระบบ");

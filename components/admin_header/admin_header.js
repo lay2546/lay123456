@@ -24,7 +24,7 @@ export function initHeader() {
         await signOut(auth);
         localStorage.clear();
         alert("ออกจากระบบแล้ว");
-        window.location.href = "index.html"; // ✅ ไปหน้า index หรือที่คุณกำหนด
+        window.location.href = "Home.html"; // ✅ ไปหน้า index หรือที่คุณกำหนด
       } catch (error) {
         console.error("❌ Logout Error:", error);
         alert("เกิดข้อผิดพลาดในการออกจากระบบ");

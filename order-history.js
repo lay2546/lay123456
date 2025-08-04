@@ -10,6 +10,21 @@ import {
   setDoc
 } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js";
 
+async function translateText(key) {
+  const lang = localStorage.getItem("language") || "en";
+  const res = await fetch(`lang/${lang}.json`);
+  const translations = await res.json();
+  return translations[key] || key;
+}
+
+async function applyTranslations() {
+  document.querySelectorAll("[data-translate]").forEach(async (el) => {
+    const key = el.getAttribute("data-translate");
+    const translated = await translateText(key);
+    el.innerHTML = translated;
+  });
+}
+
 document.addEventListener("DOMContentLoaded", () => {
   const orderList = document.getElementById("order-list");
   const addressInfo = document.getElementById("address-info");
@@ -17,13 +32,12 @@ document.addEventListener("DOMContentLoaded", () => {
   const searchBtn = document.getElementById("search-btn");
   const filterDate = document.getElementById("filter-date");
 
-  // ✅ Profile form
   const nameInput = document.getElementById("profile-name");
   const lastnameInput = document.getElementById("profile-lastname");
   const usernameInput = document.getElementById("profile-username");
   const phoneInput = document.getElementById("profile-phone");
   const addressInput = document.getElementById("profile-address");
-  const emailInput = document.getElementById("profile-email"); // From Firebase Auth
+  const emailInput = document.getElementById("profile-email");
 
   orderList.innerHTML = "<li class='text-center text-gray-500'>⏳ Loading data...</li>";
 
@@ -41,25 +55,23 @@ document.addEventListener("DOMContentLoaded", () => {
       if (docSnap.exists()) {
         const data = docSnap.data();
 
-        // ✅ Show latest address info in sidebar
         if (addressInfo) {
           addressInfo.innerHTML = `
-            <p><strong>Name:</strong> <span id="info-name">${data.name || "-"}</span></p>
-            <p><strong>Phone:</strong> <span id="info-phone">${data.phone || "-"}</span></p>
-            <p><strong>Address:</strong> <span id="info-address">${data.address || "-"}</span></p>
+            <p><strong data-translate="recipient">Recipient:</strong> <span id="info-name">${data.name || "-"}</span></p>
+            <p><strong data-translate="phone">Phone:</strong> <span id="info-phone">${data.phone || "-"}</span></p>
+            <p><strong data-translate="address">Address:</strong> <span id="info-address">${data.address || "-"}</span></p>
           `;
+          applyTranslations();
         }
 
-        // ✅ Fill profile form
         if (nameInput) nameInput.value = data.name || "";
         if (lastnameInput) lastnameInput.value = data.lastname || "";
         if (usernameInput) usernameInput.value = data.username || "";
         if (phoneInput) phoneInput.value = data.phone || "";
         if (addressInput) addressInput.value = data.address || "";
-        if (emailInput) emailInput.value = user.email || ""; // Auth email
+        if (emailInput) emailInput.value = user.email || "";
       }
 
-      // ✅ Edit address button
       if (editAddressBtn) {
         editAddressBtn.addEventListener("click", async () => {
           const name = prompt("New name:", document.getElementById("info-name")?.textContent || "");
@@ -69,19 +81,18 @@ document.addEventListener("DOMContentLoaded", () => {
           if (name && phone && address) {
             await setDoc(docRef, { name, phone, address }, { merge: true });
             addressInfo.innerHTML = `
-              <p><strong>Name:</strong> <span id="info-name">${name}</span></p>
-              <p><strong>Phone:</strong> <span id="info-phone">${phone}</span></p>
-              <p><strong>Address:</strong> <span id="info-address">${address}</span></p>
+              <p><strong data-translate="recipient">Recipient:</strong> <span id="info-name">${name}</span></p>
+              <p><strong data-translate="phone">Phone:</strong> <span id="info-phone">${phone}</span></p>
+              <p><strong data-translate="address">Address:</strong> <span id="info-address">${address}</span></p>
             `;
+            applyTranslations();
             alert("✅ Address updated successfully.");
           }
         });
       }
 
-      // ✅ Load orders
       await loadOrders(user);
 
-      // ✅ Filter by date
       if (searchBtn && filterDate) {
         searchBtn.addEventListener("click", async () => {
           await loadOrders(user, filterDate.value);
@@ -107,11 +118,11 @@ document.addEventListener("DOMContentLoaded", () => {
 
       orderList.innerHTML = "";
 
-      querySnapshot.forEach((docSnap) => {
+      for (const docSnap of querySnapshot.docs) {
         const order = docSnap.data();
         const createdAt = order.createdAt?.toDate?.() || new Date();
         const orderDate = createdAt.toISOString().split("T")[0];
-        if (selectedDate && orderDate !== selectedDate) return;
+        if (selectedDate && orderDate !== selectedDate) continue;
 
         const items = order.cart || [];
         const orderTotal = items.reduce((sum, item) =>
@@ -124,38 +135,33 @@ document.addEventListener("DOMContentLoaded", () => {
           <li class="ml-4">• ${item.name} x${item.quantity || 1} — ฿${item.price}</li>
         `).join("");
 
+        const translatedStatus = await translateText("status_" + (order.deliveryStatus || "pending"));
+        const translatedPayment = await translateText("payment_" + (order.paymentMethod || "cod"));
+
         const li = document.createElement("li");
         li.className = "bg-gray-100 p-4 rounded shadow";
         li.innerHTML = `
-          <p><strong>🧾 Order ID:</strong> ${docSnap.id}</p>
-          <p><strong>📦 Status:</strong> ${
-            order.deliveryStatus === "preparing" ? "🛠 Preparing" :
-            order.deliveryStatus === "shipping" ? "🚚 Shipping" :
-            order.deliveryStatus === "delivered" ? "✅ Delivered" :
-            "⏳ Pending"
-          }</p>
-          <p><strong>👤 Recipient:</strong> ${order.name || "-"}</p>
-          <p><strong>📞 Phone:</strong> ${order.phone || "-"}</p>
-          <p><strong>🏠 Address:</strong> ${order.address || "-"}</p>
-          <p><strong>💰 Total:</strong> ฿${finalTotal.toFixed(2)}</p>
-          <p><strong>🗓️ Date:</strong> ${createdAt.toLocaleString()}</p>
-          <p><strong>💳 Payment Method:</strong> ${
-            order.paymentMethod === "transfer" ? "Bank Transfer" :
-            order.paymentMethod === "cod" ? "Cash on Delivery" :
-            order.paymentMethod || "-"
-          }</p>
-          <p><strong>📦 Items:</strong></p>
+          <p><strong data-translate="order_id">🧾 Order ID:</strong> ${docSnap.id}</p>
+          <p><strong data-translate="status">📦 Status:</strong> ${translatedStatus}</p>
+          <p><strong data-translate="recipient">👤 Recipient:</strong> ${order.name || "-"}</p>
+          <p><strong data-translate="phone">📞 Phone:</strong> ${order.phone || "-"}</p>
+          <p><strong data-translate="address">🏠 Address:</strong> ${order.address || "-"}</p>
+          <p><strong data-translate="total">💰 Total:</strong> ฿${finalTotal.toFixed(2)}</p>
+          <p><strong data-translate="date">🗓️ Date:</strong> ${createdAt.toLocaleString()}</p>
+          <p><strong data-translate="payment_method">💳 Payment Method:</strong> ${translatedPayment}</p>
+          <p><strong data-translate="items">📦 Items:</strong></p>
           <ul class="list-disc ml-5 mt-1">${itemList}</ul>
         `;
         orderList.appendChild(li);
-      });
+        applyTranslations();
+      }
+
     } catch (err) {
       console.error("🔥 Failed to load orders:", err);
       orderList.innerHTML = "<li class='text-red-500'>❌ Failed to load data</li>";
     }
   }
 
-  // ✅ Sidebar toggle
   const menuBtn = document.getElementById("menu-btn");
   const closeBtn = document.getElementById("close-btn");
   const sidebar = document.getElementById("sidebar");
@@ -186,7 +192,6 @@ document.addEventListener("DOMContentLoaded", () => {
       };
 
       try {
-        // Use user.uid from onAuthStateChanged for accuracy
         await setDoc(doc(db, "users", auth.currentUser.uid), updatedData, { merge: true });
         alert("✅ Profile updated successfully.");
       } catch (err) {
@@ -194,5 +199,6 @@ document.addEventListener("DOMContentLoaded", () => {
         alert("❌ Error occurred while saving profile.");
       }
     });
+    
   }
 });
